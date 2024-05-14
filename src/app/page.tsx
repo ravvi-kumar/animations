@@ -1,10 +1,22 @@
 "use client";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 export default function Home() {
-  const containerRef = useRef<HTMLElement | null>(null);
+  return (
+    <main className="min-h-screen p-24">
+      <RevealFlickerText text={["Beautiful", "Moving Imagery", "With Edge"]} />
+    </main>
+  );
+}
+
+function RevealFlickerText({ text }: { text: string | string[] }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const textArray = useMemo(
+    () => (Array.isArray(text) ? text : [text]),
+    [text]
+  );
 
   useGSAP(
     () => {
@@ -20,48 +32,26 @@ export default function Home() {
           trigger: containerRef.current,
           start: "top 75%",
         },
-      }); // <-- automatically reverted
+      });
     },
     { scope: containerRef }
   );
-
   return (
-    <main ref={containerRef} className="min-h-screen p-24">
-      <div>
-        {"Beautiful"
-          .split("")
-          .map((letter, i) =>
-            letter == " " ? (
-              <span>&nbsp;</span>
-            ) : (
-              <span className="char opacity-0">{letter} </span>
-            )
-          )}
-      </div>
-      &nbsp;
-      <div>
-        {"Moving Imagery"
-          .split("")
-          .map((letter, i) =>
-            letter == " " ? (
-              <span>&nbsp;</span>
-            ) : (
-              <span className="char opacity-0">{letter} </span>
-            )
-          )}
-      </div>
-      &nbsp;
-      <div>
-        {"With Edge"
-          .split("")
-          .map((letter, i) =>
-            letter == " " ? (
-              <span>&nbsp;</span>
-            ) : (
-              <span className="char opacity-0">{letter} </span>
-            )
-          )}
-      </div>
-    </main>
+    <div ref={containerRef} className="min-h-screen p-24">
+      {textArray.map((text, i) => (
+        <div key={i}>
+          {text
+            .split("")
+            .map((letter, i) =>
+              letter == " " ? (
+                <span>&nbsp;</span>
+              ) : (
+                <span className="char opacity-0">{letter} </span>
+              )
+            )}
+          &nbsp;
+        </div>
+      ))}
+    </div>
   );
 }
